@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\CashierController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])
      ->name('admin.dashboard');
@@ -33,4 +34,18 @@ Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.ind
 Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
 Route::put('/cashiers/{id}', [CashierController::class, 'update'])->name('cashiers.update');
 Route::delete('/cashiers/{id}', [CashierController::class, 'destroy'])->name('cashiers.destroy');
+});
+
+// crud produk
+Route::resource('/produk', ProductController::class)->names([
+    'index' => 'produk.index',
+    'create' => 'produk.create',
+    'store' => 'produk.store',
+    'edit' => 'produk.edit',
+    'update' => 'produk.update',
+    'destroy' => 'produk.destroy',
+]);
+
+Route::prefix('admin')->group(function () {
+    Route::resource('products', ProductController::class);
 });
