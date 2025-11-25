@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])
      ->name('admin.dashboard');
@@ -23,3 +24,14 @@ Route::put('/admin/sales/{sale}', [SaleController::class, 'update'])->name('sale
 Route::get('/dashboard_admin', function () {
     return view('dashboard_admin');
 });
+
+
+// crud produk
+Route::resource('/produk', ProductController::class)->names([
+    'index' => 'produk.index',
+    'create' => 'produk.create',
+    'store' => 'produk.store',
+    'edit' => 'produk.edit',
+    'update' => 'produk.update',
+    'destroy' => 'produk.destroy',
+]);
