@@ -35,3 +35,7 @@ Route::resource('/produk', ProductController::class)->names([
     'update' => 'produk.update',
     'destroy' => 'produk.destroy',
 ]);
+
+Route::prefix('admin')->group(function () {
+    Route::resource('products', ProductController::class);
+});
