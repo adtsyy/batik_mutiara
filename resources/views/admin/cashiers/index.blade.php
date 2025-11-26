@@ -2,96 +2,79 @@
 
 @section('content')
 
-<div class="container mt-4">
-
-    <h3 class="fw-bold mb-1">Manajemen Kasir</h3>
-    <p class="text-muted">Kelola data kasir dan hak akses</p>
-
-    <!-- Header + Tambah -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h5 class="fw-semibold">Daftar Kasir</h5>
-            <span class="text-muted">Total {{ $cashiers->count() }} kasir terdaftar</span>
-        </div>
-
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambah">
-            + Tambah Kasir
-        </button>
+<div class="flex justify-between items-center mb-6">
+    <div>
+        <h2 class="text-2xl font-bold text-amber-900">Manajemen Kasir</h2>
+        <p class="text-sm text-gray-600">Lihat dan kelola akun kasir</p>
     </div>
 
-    <!-- Search -->
-    <input type="text" class="form-control mb-3" placeholder="Cari kasir...">
-
-    <!-- Table -->
-    <div class="card shadow-sm p-3">
-        <table class="table table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>Nama</th>
-                    <th>Username</th>
-                    <th>Password</th>
-                    <th>Status</th>
-                    <th>Tanggal Dibuat</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach($cashiers as $cashier)
-                <tr>
-                    <td>{{ $cashier->nama }}</td>
-                    <td>{{ $cashier->username }}</td>
-                    <td><span class="badge bg-light text-dark">******</span></td>
-                    <td>
-                        <span class="badge bg-success">{{ $cashier->status }}</span>
-                    </td>
-                    <td>{{ $cashier->created_at->format('d/m/Y') }}</td>
-
-                    <td>
-                        <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modalEdit{{$cashier->id}}">
-                            ✏️
-                        </button>
-
-                        <form action="{{ route('cashiers.destroy', $cashier->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger">🗑️</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-
-        </table>
-    </div>
+    <a href="{{ route('cashiers.create') }}" 
+        class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded shadow">
+        + Tambah Kasir
+    </a>
 </div>
 
-{{-- MODAL TAMBAH --}}
-<div class="modal fade" id="modalTambah">
-    <div class="modal-dialog">
-        <form class="modal-content" method="POST" action="{{ route('cashiers.store') }}">
-            @csrf
-            <div class="modal-header">
-                <h5 class="modal-title">Tambah Kasir</h5>
-            </div>
+<div class="bg-white shadow border border-amber-200 rounded-lg overflow-hidden">
 
-            <div class="modal-body">
-                <label>Nama</label>
-                <input type="text" name="nama" class="form-control" required>
-
-                <label class="mt-2">Username</label>
-                <input type="text" name="username" class="form-control" required>
-
-                <label class="mt-2">Password</label>
-                <input type="password" name="password" class="form-control" required>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary">Simpan</button>
-            </div>
-        </form>
+    {{-- Search --}}
+    <div class="p-4 border-b bg-amber-50">
+        <input type="text" placeholder="Cari kasir..."
+            class="w-full px-3 py-2 border rounded outline-none focus:border-amber-600"
+            onkeyup="window.location='?cari='+this.value"
+            value="{{ request('cari') }}">
     </div>
+
+    <table class="min-w-full text-left">
+        <thead class="bg-amber-100">
+            <tr class="text-amber-900 text-sm uppercase">
+                <th class="p-3">Nama</th>
+                <th class="p-3">Username</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Tanggal Dibuat</th>
+                <th class="p-3 text-center">Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody class="text-gray-700">
+            @forelse ($cashiers as $kasir)
+            <tr class="border-b hover:bg-amber-50">
+                <td class="p-3 font-medium">{{ $kasir->nama }}</td>
+                <td class="p-3">{{ $kasir->username }}</td>
+                <td class="p-3">
+                    <span class="px-2 py-1 text-xs rounded 
+                        {{ $kasir->status == 'Aktif' ? 'bg-green-500' : 'bg-red-500' }} 
+                        text-white">
+                        {{ $kasir->status }}
+                    </span>
+                </td>
+                <td class="p-3">{{ $kasir->created_at->format('d/m/Y') }}</td>
+
+                <td class="p-3 text-center flex gap-2 justify-center">
+
+                    <a href="{{ route('cashiers.edit', $kasir->id) }}" 
+                        class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded text-sm">
+                        Edit
+                    </a>
+
+                    <form action="{{ route('cashiers.destroy', $kasir->id) }}" method="POST" 
+                          onsubmit="return confirm('Hapus kasir ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">
+                            Hapus
+                        </button>
+                    </form>
+
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="6" class="text-center p-4 text-gray-500">Tidak ada kasir ditemukan</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+
 </div>
 
 @endsection

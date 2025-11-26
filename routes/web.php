@@ -30,11 +30,16 @@ Route::get('/dashboard_admin', function () {
 
 // Cashiers Routes
 Route::prefix('admin')->group(function () {
-Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
-Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
-Route::put('/cashiers/{id}', [CashierController::class, 'update'])->name('cashiers.update');
-Route::delete('/cashiers/{id}', [CashierController::class, 'destroy'])->name('cashiers.destroy');
+    // Cashiers CRUD
+    Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
+    Route::get('/cashiers/create', [CashierController::class, 'create'])->name('cashiers.create');
+    Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
+    Route::get('/cashiers/{id}/edit', [CashierController::class, 'edit'])->name('cashiers.edit');
+    Route::put('/cashiers/{id}', [CashierController::class, 'update'])->name('cashiers.update');
+    Route::delete('/cashiers/{id}', [CashierController::class, 'destroy'])->name('cashiers.destroy');
 });
+
+
 
 // crud produk
 Route::resource('/produk', ProductController::class)->names([
