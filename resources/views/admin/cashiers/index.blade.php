@@ -27,6 +27,7 @@
     <table class="min-w-full text-left">
         <thead class="bg-amber-100">
             <tr class="text-amber-900 text-sm uppercase">
+                <th class="p-3">ID Kasir</th>
                 <th class="p-3">Nama</th>
                 <th class="p-3">Username</th>
                 <th class="p-3">Status</th>
@@ -38,6 +39,7 @@
         <tbody class="text-gray-700">
             @forelse ($cashiers as $kasir)
             <tr class="border-b hover:bg-amber-50">
+                <td class="p-3 font-medium">{{ $kasir->id_kasir }}</td>
                 <td class="p-3 font-medium">{{ $kasir->nama }}</td>
                 <td class="p-3">{{ $kasir->username }}</td>
                 <td class="p-3">
