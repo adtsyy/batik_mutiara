@@ -42,6 +42,7 @@ Route::get('/cashier', function () {
 });
 
 // crud produk
+// admin crud produk
 Route::resource('/produk', ProductController::class)->names([
     'index' => 'produk.index',
     'create' => 'produk.create',
@@ -54,3 +55,13 @@ Route::resource('/produk', ProductController::class)->names([
 Route::prefix('admin')->group(function () {
     Route::resource('products', ProductController::class);
 });
+
+// kasir cru produk
+// Halaman input produk kasir
+Route::get('/kasir/produk', [ProductController::class, 'create'])->name('kasir.produk.create');
+
+// Proses submit produk kasir tetap menggunakan store yg sama
+Route::post('/kasir/produk', [ProductController::class, 'store'])->name('kasir.produk.store');
+
+// Menampilkan produk terbaru (opsional)
+Route::get('/kasir/produk/terbaru', [ProductController::class, 'index'])->name('kasir.produk.index');
