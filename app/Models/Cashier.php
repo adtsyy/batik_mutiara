@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Cashier extends Model
 {
     protected $fillable = [
+        'id_kasir',
         'nama',
         'username',
         'password',
-        'status',
+        'status'
     ];
 }
+
+
