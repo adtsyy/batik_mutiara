@@ -8,8 +8,22 @@
         @csrf
 
         <div class="mb-4">
+            <label class="block font-medium mb-2">Kode Produk</label>
+            <input type="text" name="code" class="w-full border rounded-md px-3 py-2" placeholder="Misal: BTK001" required>
+        </div>
+
+        <div class="mb-4">
             <label class="block font-medium mb-2">Nama Produk</label>
             <input type="text" name="name" class="w-full border rounded-md px-3 py-2" placeholder="Masukkan nama produk" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-medium mb-2">Kategori</label>
+            <select name="category" class="w-full border rounded-md px-3 py-2" required>
+                <option value="Batik Tulis">Batik Tulis</option>
+                <option value="Batik Cap">Batik Cap</option>
+                <option value="Batik Printing">Batik Printing</option>
+            </select>
         </div>
 
         <div class="mb-4">

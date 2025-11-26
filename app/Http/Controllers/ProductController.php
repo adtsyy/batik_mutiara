@@ -62,4 +62,12 @@ class ProductController extends Controller
 
         return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus!');
     }
+
+    // Halaman tambah produk untuk kasir
+    public function kasirCreate()
+    {
+        $produk = Product::orderBy('id', 'DESC')->take(5)->get();
+        return view('kasir.produk.index', compact('produk'));
+    }
+
 }
