@@ -8,10 +8,9 @@
         <p class="text-gray-600 mb-6">Ringkasan pendapatan dan penjualan</p>
     </div>
 
-    <!-- Cards grid -->
     <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-4 mb-6">
 
-        <!-- CARD — Pendapatan Hari Ini -->
+        <!-- Pendapatan Hari Ini -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex justify-between items-start">
                 <div>
@@ -27,7 +26,7 @@
             </div>
         </div>
 
-        <!-- CARD — Pendapatan Bulan Ini -->
+        <!-- Pendapatan Bulan Ini -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex justify-between items-start">
                 <div>
@@ -45,7 +44,7 @@
             </div>
         </div>
 
-        <!-- CARD — Pendapatan Tahun Ini -->
+        <!-- Pendapatan Tahun Ini -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex justify-between items-start">
                 <div>
@@ -63,7 +62,7 @@
             </div>
         </div>
 
-        <!-- CARD — Total Transaksi -->
+        <!-- Total Transaksi -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex justify-between items-start">
                 <div>

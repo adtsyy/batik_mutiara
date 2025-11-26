@@ -17,7 +17,7 @@ Route::get('/dashboard_kasir', function () {
     return view('dashboard_kasir');
 });
 
-// Sales Routes
+// Sales 
 Route::get('/admin/sales', [SaleController::class, 'index'])->name('sales.index');
 Route::get('/admin/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
 Route::get('/admin/sales/{sale}/edit', [SaleController::class, 'edit'])->name('sales.edit');
@@ -28,9 +28,9 @@ Route::get('/dashboard_admin', function () {
     return view('dashboard_admin');
 });
 
-// Cashiers Routes
+// Cashiers 
 Route::prefix('admin')->group(function () {
-    // Cashiers CRUD
+    // crud 
     Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
     Route::get('/cashiers/create', [CashierController::class, 'create'])->name('cashiers.create');
     Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');

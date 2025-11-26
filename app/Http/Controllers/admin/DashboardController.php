@@ -11,7 +11,7 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // ambil semua sale (atau batasi sesuai tenant/branch jika perlu)
+        // ambil semua sale 
         $sales = Sale::orderBy('created_at', 'desc')->get();
 
         $now = Carbon::now();
