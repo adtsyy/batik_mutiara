@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cashier;
@@ -12,6 +12,12 @@ class CashierController extends Controller
     {
         $cashiers = Cashier::orderBy('created_at', 'asc')->get();
         return view('admin.cashiers.index', compact('cashiers'));
+    }
+
+    // FORM TAMBAH KASIR
+    public function create()
+    {
+        return view('admin.cashiers.create');
     }
 
     public function store(Request $request)
@@ -30,6 +36,13 @@ class CashierController extends Controller
         ]);
 
         return redirect()->route('cashiers.index')->with('success', 'Kasir berhasil ditambahkan');
+    }
+
+    // FORM EDIT KASIR
+    public function edit($id)
+    {
+        $cashier = Cashier::findOrFail($id);
+        return view('admin.cashiers.edit', compact('cashier'));
     }
 
     public function update(Request $request, $id)
