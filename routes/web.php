@@ -7,7 +7,7 @@ use App\Http\Controllers\admin\CashierController;
 use App\Http\Controllers\ProductController;
 
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])
-     ->name('admin.dashboard');
+    ->name('admin.dashboard');
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,6 +36,12 @@ Route::put('/cashiers/{id}', [CashierController::class, 'update'])->name('cashie
 Route::delete('/cashiers/{id}', [CashierController::class, 'destroy'])->name('cashiers.destroy');
 });
 
+//kasir_cru_penjualan
+Route::get('/cashier', function () {
+    return view('cashier.index');
+});
+
+// crud produk
 // admin crud produk
 Route::resource('/produk', ProductController::class)->names([
     'index' => 'produk.index',
