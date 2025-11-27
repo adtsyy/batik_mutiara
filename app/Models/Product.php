@@ -13,4 +13,5 @@ class Product extends Model
         'price',     // Harga Produk
         'stock'      // Stok Produk
     ];
+    
 }

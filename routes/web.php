@@ -5,6 +5,8 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\CashierController;
 use App\Http\Controllers\ProductController;
+use Symfony\Component\Routing\Route as RoutingRoute;
+use App\Models\Product;
 
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])
     ->name('admin.dashboard');
@@ -17,7 +19,7 @@ Route::get('/dashboard_kasir', function () {
     return view('dashboard_kasir');
 });
 
-// Sales 
+// Sales Routes
 Route::get('/admin/sales', [SaleController::class, 'index'])->name('sales.index');
 Route::get('/admin/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
 Route::get('/admin/sales/{sale}/edit', [SaleController::class, 'edit'])->name('sales.edit');
@@ -28,22 +30,14 @@ Route::get('/dashboard_admin', function () {
     return view('dashboard_admin');
 });
 
-// Cashiers 
+// Cashiers Routes
 Route::prefix('admin')->group(function () {
-    // crud 
-    Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
-    Route::get('/cashiers/create', [CashierController::class, 'create'])->name('cashiers.create');
-    Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
-    Route::get('/cashiers/{id}/edit', [CashierController::class, 'edit'])->name('cashiers.edit');
-    Route::put('/cashiers/{id}', [CashierController::class, 'update'])->name('cashiers.update');
-    Route::delete('/cashiers/{id}', [CashierController::class, 'destroy'])->name('cashiers.destroy');
+Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
+Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
+Route::put('/cashiers/{id}', [CashierController::class, 'update'])->name('cashiers.update');
+Route::delete('/cashiers/{id}', [CashierController::class, 'destroy'])->name('cashiers.destroy');
 });
 
-
-//kasir_cru_penjualan
-Route::get('/cashier', function () {
-    return view('cashier.index');
-});
 
 // crud produk
 // admin crud produk
@@ -61,6 +55,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // kasir cru produk
+
 // Halaman input produk kasir
 Route::get('/kasir/produk', [ProductController::class, 'create'])->name('kasir.produk.create');
 
@@ -69,3 +64,35 @@ Route::post('/kasir/produk', [ProductController::class, 'store'])->name('kasir.p
 
 // Menampilkan produk terbaru (opsional)
 Route::get('/kasir/produk/terbaru', [ProductController::class, 'index'])->name('kasir.produk.index');
+
+Route::get('/sales', [SaleController::class, 'index']);
+Route::post('/sales/add', [SaleController::class, 'add'])->name('sales.add');
+
+// use App\Http\Controllers\cashier\SaleController
+// Route::prefix('kasir')->middleware(['checkrole:kasir'])->group(function(){
+// Route::get('/penjualan', [SaleController::class,'index'])->name('cashier.index');
+// Route::get('/penjualan/create', [SaleController::class,'create'])->name('cashier.sales.create');
+// Route::post('/penjualan/store', [SaleController::class,'store'])->name('casier.sales.store');
+// });
+
+
+//kasir_cru_penjualan
+Route::get('/cashier', function () {
+    return view('cashier.index');
+});
+
+Route::get('/cashier/sales/create', function () {
+    $products = Product::all();
+    return view('cashier.sales.create', compact('products'));
+})->name('cashier.sales.create');
+
+Route::get('/cashier/product/cru_produk', function () {
+    $products = Product::all();
+    return view('cashier.product.cru_produk', compact('products'));
+})->name('cashier.product.cru_produk');
+
+Route::get('/cashier/sales/rekap_sales', function () {
+    $products = Product::all();
+    return view('cashier.sales.rekap_sales', compact('products'));
+})->name('cashier.sales.rekap_sales');
+

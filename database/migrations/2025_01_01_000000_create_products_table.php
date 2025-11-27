@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_product');
             $table->string('code')->unique(); // Kode Produk (BTK001, dsb)
             $table->string('name');           // Nama Produk
             $table->enum('category', ['Batik Tulis', 'Batik Cap', 'Batik Printing']);

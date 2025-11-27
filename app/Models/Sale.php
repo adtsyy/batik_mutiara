@@ -21,4 +21,8 @@ class Sale extends Model
 
     protected $table = 'sales';
 
+    public function Product()
+    {
+        return $this->belongsTo(Product::class)
+    }
 }

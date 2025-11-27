@@ -67,6 +67,30 @@ class SaleController extends Controller
         ]);
 
         return redirect()->route('sales.index')
-                         ->with('success', 'Data berhasil diubah');
+                        ->with('success', 'Data berhasil diubah');
+    }
+
+    public function add(Request $request)
+    {
+        // Validasi basic
+        $request->validate([
+            'product_id' => 'required',
+            'qty' => 'required|integer|min:1'
+        ]);
+    
+        // Logic nambah ke keranjang (sementara demo)
+        // Nanti bisa kamu sambung ke database / session
+
+        // contoh simpan ke session
+        $cart = session()->get('cart', []);
+
+        $cart[] = [
+            'product_id' => $request->product_id,
+            'qty' => $request->qty,
+        ];
+
+        session()->put('cart', $cart);
+
+        return back()->with('success', 'Produk ditambahkan ke keranjang');
     }
 }
