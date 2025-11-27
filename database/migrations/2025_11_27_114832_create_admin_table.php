@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sales', function (Blueprint $table) {
-            $table->id('id_sales');
-            $table->string('invoiceNumber');
-            $table->unsignedBigInteger('cashierId');
-            $table->string('cashierName');
-            $table->string('paymentMethod');
-            $table->json('products');
-            $table->double('total');
+        Schema::create('admin', function (Blueprint $table) {
+            $table->id('id_admin');
+            $table->string('nama_admin',100);
+            $table->string('username',15)->unique();
+            $table->string('password',255);
+            $table->enum('hak_akses', ['admin','kasir'])->default('admin');
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sales');
+        Schema::dropIfExists('admin');
     }
 };

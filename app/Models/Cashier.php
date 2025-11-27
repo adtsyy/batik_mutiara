@@ -13,6 +13,7 @@ class Cashier extends Model
         'password',
         'status'
     ];
+
 }
 
 

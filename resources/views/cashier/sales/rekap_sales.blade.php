@@ -11,7 +11,7 @@
         <h2 class="text-xl font-semibold mb-2">Pilih Produk</h2>
         <p class="text-gray-600 mb-4">Tambahkan produk ke keranjang</p>
 
-        <form action="{{ route('cashier.produk.cru_produk') }}" method="POST">
+        <form action="{{ route('cashier.sales.rekap_sales') }}" method="POST">
             @csrf
 
             {{-- <label class="block text-sm mb-1">Produk</label>
