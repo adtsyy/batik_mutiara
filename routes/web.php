@@ -36,28 +36,44 @@ Route::get('/dashboard_umum', function () {
 })->name('dashboard_umum');
 
 // ======================= KASIR ROUTES ========================
-Route::prefix('kasir')->group(function () {
+Route::prefix('cashier')->group(function () {
     // Dashboard Kasir
-    Route::get('/dashboard', function () {
-        return view('dashboard_kasir');
-    })->name('kasir.dashboard');
+    Route::get('/', function () {
+        $products = Product::all();
+        $sales = \App\Models\Sale::all();
+        return view('cashier.index', compact('products', 'sales'));
+    })->name('cashier.index');
 
-    // CRUD Produk Kasir
-    Route::get('/produk', [ProductController::class, 'create'])->name('kasir.produk.create');
-    Route::post('/produk', [ProductController::class, 'store'])->name('kasir.produk.store');
-    Route::get('/produk/terbaru', [ProductController::class, 'index'])->name('kasir.produk.index');
+    // Input Produk Kasir
+    Route::get('/product/cru_produk', function () {
+        $products = Product::all();
+        return view('cashier.produk.cru_produk', compact('products'));
+    })->name('cashier.product.cru_produk');
 
-    // Sales Kasir
+    Route::post('/product/store', [ProductController::class, 'store'])
+        ->name('cashier.product.store');
+
+    // Input Penjualan Kasir
     Route::get('/sales/create', function () {
         $products = Product::all();
         return view('cashier.sales.create', compact('products'));
-    })->name('kasir.sales.create');
+    })->name('cashier.sales.create');
 
-    Route::get('/sales/rekap', function () {
-        $products = Product::all();
-        return view('cashier.sales.rekap_sales', compact('products'));
-    })->name('kasir.sales.rekap');
+    Route::post('/sales/store', [SaleController::class, 'store'])
+        ->name('cashier.sales.store');
+
+    // Rekap Penjualan Kasir
+    Route::get('/sales/rekap_sales', function () {
+        $sales = \App\Models\Sale::all();
+        return view('cashier.sales.rekap_sales', compact('sales'));
+    })->name('cashier.sales.rekap_sales');
 });
+
+// AUTH ROUTES
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ======================= SALES TAMBAHAN =======================
 Route::post('/sales/add', [SaleController::class, 'add'])->name('sales.add');
+
