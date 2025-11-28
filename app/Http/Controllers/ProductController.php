@@ -25,16 +25,24 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:products',
-            'name' => 'required',
-            'category' => 'required',
-            'price' => 'required|numeric',
-            'stock' => 'required|numeric',
+            'code' => 'required|unique:products,code',
+            'name' => 'required|string|max:100',
+            'category' => 'required|in:Batik Tulis,Batik Cap,Batik Printing',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|numeric|min:0',
         ]);
 
         Product::create($request->all());
 
-        return redirect()->route('produk.index')->with('success', 'Produk berhasil ditambahkan!');
+        // Jika dari cashier, redirect ke cashier index
+        if ($request->routeIs('cashier.product.store')) {
+            return redirect()->route('cashier.index')
+                ->with('success', 'Produk berhasil ditambahkan!');
+        }
+
+        // Jika dari admin, redirect ke admin produk index
+        return redirect()->route('produk.index')
+            ->with('success', 'Produk berhasil ditambahkan!');
     }
 
     public function edit(Product $produk)

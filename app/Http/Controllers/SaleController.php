@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Detail;
 use App\Models\Sale;
 use App\Models\User;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
@@ -92,5 +94,56 @@ class SaleController extends Controller
         session()->put('cart', $cart);
 
         return back()->with('success', 'Produk ditambahkan ke keranjang');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'qty' => 'required|integer|min:1',
+        ]);
+
+        DB::transaction(function () use ($request) {
+            $product = Product::find($request->product_id);
+            
+            // Cek stok
+            if ($product->stock < $request->qty) {
+                throw new \Exception("Stok tidak cukup! Stok tersedia: {$product->stock}");
+            }
+
+            // Buat invoice number
+            $invoiceNumber = 'INV-' . date('YmdHis') . rand(1000, 9999);
+
+            // Buat Sale header
+            $sale = Sale::create([
+                'invoiceNumber' => $invoiceNumber,
+                'cashierId' => auth()->id() ?? session('user_id'),
+                'cashierName' => auth()->user()->name ?? session('cashier_name') ?? 'Cashier',
+                'paymentMethod' => 'cash',
+                'products' => json_encode([
+                    [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'qty' => $request->qty,
+                        'price' => $product->price,
+                    ]
+                ]),
+                'total' => $product->price * $request->qty,
+            ]);
+
+            // Buat Detail Penjualan
+            Detail::create([
+                'id_penjualan' => $sale->id_sales,
+                'id_product' => $product->id,
+                'jumlah' => $request->qty,
+                'subtotal' => $product->price * $request->qty,
+            ]);
+
+            // Kurangi stok produk
+            $product->decrement('stock', $request->qty);
+        });
+
+        return redirect()->route('cashier.sales.create')
+            ->with('success', 'Penjualan berhasil disimpan!');
     }
 }

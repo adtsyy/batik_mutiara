@@ -9,9 +9,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id('id_product');
-            $table->string('code')->unique(); // Kode Produk (BTK001, dsb)
-            $table->string('name');           // Nama Produk
+            $table->id(); // Ini auto-increment primary key (id, bukan id_product)
+            $table->string('code')->unique();
+            $table->string('name');
             $table->enum('category', ['Batik Tulis', 'Batik Cap', 'Batik Printing']);
             $table->integer('price');
             $table->integer('stock')->default(0);

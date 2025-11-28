@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Sale extends Model
 {
+    protected $table = 'sales';
+    protected $primaryKey = 'id_sales';
     protected $fillable = [
         'invoiceNumber',
         'cashierId',
@@ -19,10 +21,8 @@ class Sale extends Model
         'products' => 'array',
     ];
 
-    protected $table = 'sales';
-
-    public function Product()
+    public function details()
     {
-        return $this->belongsTo(Product::class)
+        return $this->hasMany(Detail::class, 'id_penjualan', 'id_sales'); // Perbaiki relasi
     }
 }

@@ -8,7 +8,7 @@ use App\Models\Product;
 use App\Models\Sale;
 use Illuminate\Support\Facades\DB;
 
-class PenjualanController extends Controller
+class SaleController extends Controller
 {
     public function index(Request $request)
     {

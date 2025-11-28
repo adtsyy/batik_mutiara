@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('detail_penjualan', function (Blueprint $table) {
             $table->id('id_detail');
-            $table->foreignId('id_sales')->constrained('sales')->cascadeOnDelete();
-            $table->foreignId('id_product')->constrained('product')->cascadeOnDelete();
+            $table->foreignId('id_penjualan')->constrained('sales', 'id_sales')->cascadeOnDelete();
+            $table->foreignId('id_product')->constrained('products')->cascadeOnDelete(); // Ubah dari 'product' jadi 'products'
             $table->integer('jumlah');
-            $table->decimal('subtotal',12,2);
+            $table->decimal('subtotal', 12, 2);
             $table->timestamps();
         });
     }
