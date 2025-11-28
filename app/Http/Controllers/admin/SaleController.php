@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sale;
 use App\Models\User;
@@ -9,6 +10,7 @@ use App\Models\Product;
 
 class SaleController extends Controller
 {
+    // Tampilkan daftar penjualan
     public function index(Request $request)
     {
         $search = $request->search;
@@ -26,11 +28,13 @@ class SaleController extends Controller
         ]);
     }
 
+    // Tampilkan detail penjualan
     public function show(Sale $sale)
     {
         return view('admin.sales.show', compact('sale'));
     }
 
+    // Tampilkan form edit penjualan
     public function edit(Sale $sale)
     {
         return view('admin.sales.edit', [
@@ -40,6 +44,7 @@ class SaleController extends Controller
         ]);
     }
 
+    // Update penjualan
     public function update(Request $request, Sale $sale)
     {
         $data = $request->validate([
@@ -70,18 +75,14 @@ class SaleController extends Controller
                         ->with('success', 'Data berhasil diubah');
     }
 
+    // Tambah produk sementara ke "keranjang"
     public function add(Request $request)
     {
-        // Validasi basic
         $request->validate([
             'product_id' => 'required',
             'qty' => 'required|integer|min:1'
         ]);
-    
-        // Logic nambah ke keranjang (sementara demo)
-        // Nanti bisa kamu sambung ke database / session
 
-        // contoh simpan ke session
         $cart = session()->get('cart', []);
 
         $cart[] = [

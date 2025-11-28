@@ -8,7 +8,7 @@
         <p class="text-sm text-gray-600">Lihat dan kelola produk Batik</p>
     </div>
 
-    <a href="{{ route('produk.create') }}" 
+    <a href="{{ route('products.create') }}" 
        class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded shadow">
        + Tambah Produk
     </a>
@@ -36,7 +36,7 @@
         </thead>
 
         <tbody class="text-gray-700">
-            @forelse ($produk as $p)
+            @forelse ($products as $p)
             <tr class="border-b hover:bg-amber-50">
                 <td class="p-3"><span class="text-xs font-bold bg-gray-200 px-2 py-1 rounded">{{ $p->code }}</span></td>
                 <td class="p-3 font-medium">{{ $p->name }}</td>
@@ -53,12 +53,12 @@
                 <td class="p-3">{{ $p->stock }}</td>
                 <td class="p-3 text-center">
 
-                    <a href="{{ route('produk.edit', $p->id) }}" 
+                    <a href="{{ route('products.edit', $p->id) }}" 
                        class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded text-sm mr-1">
                         Edit
                     </a>
 
-                    <form action="{{ route('produk.destroy', $p->id) }}" method="POST" class="inline">
+                    <form action="{{ route('products.destroy', $p->id) }}" method="POST" class="inline">
                         @csrf @method('DELETE')
                         <button class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm"
                                 onclick="return confirm('Hapus produk ini?')">
@@ -80,7 +80,7 @@
 </div>
 
 <div class="mt-4">
-    {{ $produk->links() }}
+    {{ $products->links() }}
 </div>
 
 @endsection

@@ -9,38 +9,36 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        // ambil semua sale 
         $sales = Sale::orderBy('created_at', 'desc')->get();
-
         $now = Carbon::now();
 
+        // Batas waktu
         $todayStart = $now->copy()->startOfDay();
         $monthStart = $now->copy()->startOfMonth();
         $yearStart  = $now->copy()->startOfYear();
 
-        // Hitung pendapatan
-        $todayRevenue = $sales->filter(fn($s) => Carbon::parse($s->created_at)->greaterThanOrEqualTo($todayStart))
-                               ->sum('total');
+        // Pendapatan
+        $todayRevenue = $sales->where('created_at', '>=', $todayStart)->sum('total');
+        $monthRevenue = $sales->where('created_at', '>=', $monthStart)->sum('total');
+        $yearRevenue  = $sales->where('created_at', '>=', $yearStart)->sum('total');
 
-        $monthRevenue = $sales->filter(fn($s) => Carbon::parse($s->created_at)->greaterThanOrEqualTo($monthStart))
-                               ->sum('total');
+        // Jumlah transaksi
+        $todayTransactions = $sales->where('created_at', '>=', $todayStart)->count();
+        $totalSales = $sales->count();
 
-        $yearRevenue = $sales->filter(fn($s) => Carbon::parse($s->created_at)->greaterThanOrEqualTo($yearStart))
-                             ->sum('total');
+        // Transaksi terbaru
+        $recentSales = $sales->take(5);
 
-        $todayTransactions = $sales->filter(fn($s) => Carbon::parse($s->created_at)->greaterThanOrEqualTo($todayStart))->count();
-
-        $recentSales = $sales->take(5); // 5 transaksi terbaru (sudah di-orderBy)
-
-        return view('admin.dashboard', compact(
+        // Gunakan totalSales untuk dashboard
+        return view('admin.sales.dashboard', compact(
             'todayRevenue',
             'monthRevenue',
             'yearRevenue',
             'todayTransactions',
-            'recentSales',
-            'sales'
+            'totalSales',
+            'recentSales'
         ));
     }
 }

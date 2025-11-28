@@ -1,82 +1,98 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\admin;
 
-use App\Models\Detail;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Product;
 use App\Models\Sale;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Models\Product;
 
-class PenjualanController extends Controller
+class SaleController extends Controller
 {
+    // Tampilkan daftar penjualan
     public function index(Request $request)
     {
-        $id_kasir = session('user_id');
-        $query = Sale::with('detail.produk')->where('id_kasir', $id_kasir)->orderBy('tanggal_penjualan','desc');
+        $search = $request->search;
 
-        if ($request->filled('from')) {
-            $query->whereDate('tanggal_penjualan', '>=', $request->from);
-        }
-        if ($request->filled('to')) {
-            $query->whereDate('tanggal_penjualan', '<=', $request->to);
-        }
-        $penjualan = $query->get();
+        $sales = Sale::query()
+            ->when($search, function ($q) use ($search) {
+                $q->where('invoiceNumber', 'like', "%$search%")
+                  ->orWhere('cashierName', 'like', "%$search%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        // total keseluruhan / periode
-        $totalAll = Sale::where('id_kasir', $id_kasir)->sum('total_harga');
-
-        return view('kasir.penjualan.index', compact('penjualan','totalAll'));
+        return view('admin.sales.index', [
+            'sales' => $sales,
+        ]);
     }
 
-    public function create()
+    // Tampilkan detail penjualan
+    public function show(Sale $sale)
     {
-        $produk = Product::where('stok','>',0)->get();
-        return view('kasir.penjualan.create', compact('produk'));
+        return view('admin.sales.show', compact('sale'));
     }
 
-    public function store(Request $r)
+    // Tampilkan form edit penjualan
+    public function edit(Sale $sale)
     {
-        $r->validate([
-            'tanggal' => 'required|date',
-            'produk' => 'required|array',
-            'produk.*' => 'required|integer|exists:produk,id_produk',
-            'jumlah' => 'required|array',
-            'jumlah.*' => 'required|integer|min:1',
+        return view('admin.sales.edit', [
+            'sale' => $sale,
+            'cashiers' => User::where('role', 'cashier')->get(),
+            'products' => Product::all()
+        ]);
+    }
+
+    // Update penjualan
+    public function update(Request $request, Sale $sale)
+    {
+        $data = $request->validate([
+            'invoiceNumber' => 'required',
+            'cashierId' => 'required',
+            'paymentMethod' => 'required',
+            'products' => 'required|array|min:1',
+            'products.*.productId' => 'required',
+            'products.*.quantity' => 'required|numeric',
+            'products.*.price' => 'required|numeric',
         ]);
 
-        DB::transaction(function() use ($r) {
-            // 1. buat penjualan header
-            $penjualan = Sale::create([
-                'tanggal_penjualan' => $r->tanggal,
-                'total_harga' => 0,
-                'id_kasir' => session('user_id'),
-                'id_admin' => null
-            ]);
+        // Hitung total
+        $total = collect($data['products'])
+            ->sum(fn($p) => $p['quantity'] * $p['price']);
 
-            $total = 0;
-            foreach ($r->produk as $index => $id_produk) {
-                $jumlah = intval($r->jumlah[$index]);
-                $produk = Product::where('id_produk', $id_produk)->lockForUpdate()->first(); // lock for concurrency
-                if (!$produk) throw new \Exception("Produk tidak ditemukan");
-                if ($produk->stok < $jumlah) {
-                    throw new \Exception("Stok produk {$produk->nama_produk} tidak cukup (stok: {$produk->stok})");
-                }
-                $subtotal = bcmul($produk->harga, $jumlah, 2); // decimal safe
-                Detail::create([
-                    'id_penjualan' => $penjualan->id_penjualan,
-                    'id_produk' => $id_produk,
-                    'jumlah' => $jumlah,
-                    'subtotal' => $subtotal
-                ]);
-                $produk->decrement('stok', $jumlah);
-                $total += (float)$subtotal;
-            }
+        $cashier = User::find($data['cashierId']);
 
-            // update header total
-            $penjualan->update(['total_harga' => $total]);
-        });
+        $sale->update([
+            'invoiceNumber' => $data['invoiceNumber'],
+            'cashierId' => $data['cashierId'],
+            'cashierName' => $cashier->name,
+            'paymentMethod' => $data['paymentMethod'],
+            'products' => $data['products'],
+            'total' => $total,
+        ]);
 
-        return redirect()->route('kasir.penjualan.index')->with('success','Penjualan tersimpan.');
+        return redirect()->route('sales.index')
+                        ->with('success', 'Data berhasil diubah');
+    }
+
+    // Tambah produk sementara ke "keranjang"
+    public function add(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required',
+            'qty' => 'required|integer|min:1'
+        ]);
+
+        $cart = session()->get('cart', []);
+
+        $cart[] = [
+            'product_id' => $request->product_id,
+            'qty' => $request->qty,
+        ];
+
+        session()->put('cart', $cart);
+
+        return back()->with('success', 'Produk ditambahkan ke keranjang');
     }
 }

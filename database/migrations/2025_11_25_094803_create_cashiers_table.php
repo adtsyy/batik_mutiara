@@ -1,25 +1,18 @@
-<?php
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class extends Migration
+public function up(): void
 {
-    public function up()
-    {
+    if (!Schema::hasTable('cashiers')) {
         Schema::create('cashiers', function (Blueprint $table) {
-            $table->id('id_cashier');
-            $table->string('nama');
+            $table->id();
+            $table->string('name');
             $table->string('username')->unique();
             $table->string('password');
-            $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif');
+            $table->enum('status', ['AKTIF','NONAKTIF'])->default('AKTIF');
             $table->timestamps();
         });
     }
+}
 
-    public function down()
-    {
-        Schema::dropIfExists('cashiers');
-    }
-};
+public function down(): void
+{
+    Schema::dropIfExists('cashiers');
+}
