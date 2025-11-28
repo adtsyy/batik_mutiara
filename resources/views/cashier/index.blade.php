@@ -1,44 +1,77 @@
-@extends('layouts.app')
+@extends('layouts.cashier-navbar')
 
 @section('content')
 
-<div class="max-w-2xl mx-auto mb-6">
-            <div class="grid grid-cols-3 bg-white border border-amber-200 rounded-lg overflow-hidden">
+<style>
+    .tab-content.hidden {
+        display: none !important;
+    }
+    .tab-btn.active {
+        background-color: #78350f;
+        color: white;
+    }
+</style>
 
-                <button onclick="switchTab('create')"
-                    id="tab-sales"
-                    class="py-3 flex items-center justify-center gap-2 hover:bg-amber-100 font-medium">
+<div class="container-fluid mt-4">
+    <!-- TAB BUTTONS -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group w-100" role="group">
+                <button type="button" 
+                    class="btn btn-outline-warning flex-fill tab-btn active" 
+                    onclick="switchTab('create', this)"
+                    id="btn-create">
                     <i class="fas fa-shopping-cart"></i> Input Penjualan
                 </button>
 
-                <button onclick="switchTab('products')"
-                    id="tab-products"
-                    class="py-3 flex items-center justify-center gap-2 hover:bg-amber-100 font-medium">
+                <button type="button" 
+                    class="btn btn-outline-warning flex-fill tab-btn" 
+                    onclick="switchTab('products', this)"
+                    id="btn-products">
                     <i class="fas fa-box"></i> Input Produk
                 </button>
 
-                <button onclick="switchTab('rekap')"
-                    id="tab-recap"
-                    class="py-3 flex items-center justify-center gap-2 hover:bg-amber-100 font-medium">
+                <button type="button" 
+                    class="btn btn-outline-warning flex-fill tab-btn" 
+                    onclick="switchTab('recap', this)"
+                    id="btn-recap">
                     <i class="fas fa-receipt"></i> Rekap Penjualan
                 </button>
             </div>
         </div>
+    </div>
 
-        <!-- TAB CONTENT -->
-        <div id="content-create">@include('cashier.sales.create')</div>
-        <div id="content-products" class="hidden">@include('cashier.produk.cru_produk')</div>
-        <div id="content-recap" class="hidden">@include('cashier.sales.rekap_sales')</div>
+    <!-- TAB CONTENT -->
+    <div id="content-create" class="tab-content">
+        @include('cashier.sales.create', compact('products'))
+    </div>
 
-    <!-- Tab Switch Script -->
-    <script>
-        function switchTab(tab) {
-            document.getElementById('content-sales').classList.add('hidden')
-            document.getElementById('content-products').classList.add('hidden')
-            document.getElementById('content-recap').classList.add('hidden')
+    <div id="content-products" class="tab-content hidden">
+        @include('cashier.produk.cru_produk', compact('products'))
+    </div>
 
-            document.getElementById(`content-${tab}`).classList.remove('hidden')
-        }
-    </script>
+    <div id="content-recap" class="tab-content hidden">
+        @include('cashier.sales.rekap_sales', compact('sales'))
+    </div>
+</div>
+
+<!-- Tab Switch Script -->
+<script>
+    function switchTab(tab, buttonElement) {
+        // Hide semua content
+        document.querySelectorAll('.tab-content').forEach(el => {
+            el.classList.add('hidden');
+        });
+
+        // Show yang dipilih
+        document.getElementById(`content-${tab}`).classList.remove('hidden');
+
+        // Update button styling
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        buttonElement.classList.add('active');
+    }
+</script>
 
 @endsection
