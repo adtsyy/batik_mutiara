@@ -6,10 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cashier extends Model
 {
+    protected $primaryKey = 'id_kasir'; // sesuai tabel
+    protected $table = 'cashiers';
+    public $timestamps = true;
+
     protected $fillable = [
-        'name',
+        'nama',       // kolom di DB
         'username',
         'password',
         'status',
     ];
 }
+
