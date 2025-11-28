@@ -13,3 +13,13 @@ class Cashier extends Model
         'status',
     ];
 }
+        'id_kasir',
+        'nama',
+        'username',
+        'password',
+        'status'
+    ];
+
+}
+
+
