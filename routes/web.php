@@ -5,7 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\admin\DashboardController;
-use App\Http\Controllers\admin\CashierController;
+// use App\Http\Controllers\admin\CashierController;
 use App\Http\Controllers\ProductController;
 use Symfony\Component\Routing\Route as RoutingRoute;
 use App\Models\Product;
@@ -19,10 +19,10 @@ Route::get('/', function () {
 });
 
 // Halaman Login
-Route::get('/login', [AuthController::class, 'loginPage'])->name('login');
+Route::get('/login/admin', [AuthController::class, 'loginPage'])->name('login');
 
 // Proses Login
-Route::post('/login', [AuthController::class, 'loginSubmit'])->name('login.submit');
+Route::post('/login/admin', [AuthController::class, 'loginSubmit'])->name('login.submit');
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -32,10 +32,10 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
-    Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
-    Route::put('/cashiers/{id}', [CashierController::class, 'update'])->name('cashiers.update');
-    Route::delete('/cashiers/{id}', [CashierController::class, 'destroy'])->name('cashiers.destroy');
+    Route::get('/admin/dashboard/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
+    Route::post('/admin/dashboard/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
+    Route::put('/admin/dashboard/cashiers/{id}', [CashierController::class, 'update'])->name('cashiers.update');
+    Route::delete('/admin/dashboard/cashiers/{id}', [CashierController::class, 'destroy'])->name('cashiers.destroy');
 });
 
 Route::get('/dashboard_kasir', function () {
