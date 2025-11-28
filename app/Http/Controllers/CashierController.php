@@ -16,13 +16,13 @@ class CashierController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required',
+            'name' => 'required',
             'username' => 'required|unique:cashiers',
             'password' => 'required|min:4',
         ]);
 
         Cashier::create([
-            'nama' => $request->nama,
+            'name' => $request->name,
             'username' => $request->username,
             'password' => $request->password, // bisa pakai bcrypt jika diperlukan
             'status' => 'Aktif',
@@ -36,7 +36,7 @@ class CashierController extends Controller
         $cashier = Cashier::findOrFail($id);
 
         $cashier->update([
-            'nama' => $request->nama,
+            'name' => $request->name,
             'username' => $request->username,
             'password' => $request->password,
             'status' => $request->status,
